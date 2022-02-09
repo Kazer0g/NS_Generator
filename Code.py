@@ -47,7 +47,6 @@ class Main_Window (tk.Tk):
 		self.createfiles ()
 		os.chdir("..")
 		os.chdir("..")
-		os.chdir("..")
 		
 
 	def createTests (self):
