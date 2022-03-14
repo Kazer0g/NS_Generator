@@ -26,7 +26,18 @@ class Main_Window (tk.Tk):
 		self.str_mark = ""
 		self.st = ""
 
-		
+		self.left = ""
+		self.right = ""
+
+		self.li_answears = []
+
+		#-------------------------------------------------------------------------------------------------------------------Выбор один/много ответов)
+		self.lot = IntVar()
+
+		self.lotbtn = tk.Checkbutton (self, text="Одно решение", variable=self.lot)
+		self.lotbtn.place (x=0, y=100)
+
+
 		#------------------------------------------------------------------------------------------------------------Выбор активных систем счисления)
 		self.lbl_numeralsystem = tk.Label (self, text="Системы счисления") 
 		self.lbl_numeralsystem.place (x=0, y=0)
@@ -98,8 +109,13 @@ class Main_Window (tk.Tk):
 		print ("Max/Min:", self.mm)
 		for i in range (int(self.ent_times.get())):
 			self.rand()
-			self.li_full.append("Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
-			self.li_mark.append(self.str_mark)
+			self.mark (self.left, self.right)
+			if self.lot.get() != 1:
+				self.li_full.append("Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
+				self.li_mark.append(self.str_mark)
+			elif self.lot.get() == 1:
+				self.li_full.append("Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
+				self.minvar ()
 		print(self.li_full)
 		print (self.li_mark)
 		
@@ -112,6 +128,11 @@ class Main_Window (tk.Tk):
 			self.cc.append(10)
 		if self.c_16.get() == 1:
 			self.cc.append(16)
+
+	#--------------------------------------------------------------------------------------------------------------Функция сведения ответов к одному)
+	def minvar (self):
+		print ("---")
+		print (self.left)
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
 	def collectMM (self):
@@ -155,10 +176,10 @@ class Main_Window (tk.Tk):
 		elif right_cc ==16:
 			right = hex(self.actnum)
 
+		self.left = left
+		self.right = right
+
 		self.str_full = str(left) + "=" + str(right)
-
-
-		self.mark (left, right)
 
 	#-------------------------------------------------------------------------------------------------------Функция генерации закрашенного равенства)
 	def mark (self, left, right):
@@ -169,11 +190,18 @@ class Main_Window (tk.Tk):
 	#----------------------------------------------------------------------------------------------------------------------Функция расчета сложности)
 	def marker (self, num, procent):
 		self.st = str(num)
+
+		pref = ""
+
+		if self.st[0] == "0":
+			pref = self.st[:2]
+			self.st = self.st[2:]
+
 		count = round((len(self.st)/100)*procent)
 		for i in range (count):
 			self.markering (self.st, procent)
 
-		return self.st
+		return pref + self.st
 	
 	#-----------------------------------------------------------------------------------------------------------------Функция закрашивания равенства)
 	def markering (self, st, procent):
