@@ -28,6 +28,10 @@ class Main_Window (tk.Tk):
 
 		self.left = ""
 		self.right = ""
+		self.left_cc = ""
+		self.right_cc = ""
+
+		self.varinants = []
 
 		self.li_answears = []
 
@@ -131,8 +135,77 @@ class Main_Window (tk.Tk):
 
 	#--------------------------------------------------------------------------------------------------------------Функция сведения ответов к одному)
 	def minvar (self):
-		print ("---")
-		print (self.left)
+		lr = self.str_mark.split("=")
+		left = lr[0]
+		right = lr[1]
+
+		if len(left) >= len(right):
+			self.variant (right, self.right_cc, self.left_cc)
+		else:
+			self.variant (left, self.left_cc, self.right_cc)
+
+		
+	#-----------------------------------------------------------------------------------------------------------------------Функция поиска вариантов)
+	def variant (self, num, cc_num, cc_side):
+		print (cc_num)
+		print (num)
+		count = 0
+		self.varinants.clear()
+		for i in str(num):
+			if i == "*":
+				count = count + 1
+		print (count)
+
+		for calk in range (cc_num**count):
+			
+			if cc_num == 2:
+				cc_calk = bin(calk)
+			elif cc_num == 10:
+				cc_calk = int(calk)
+			elif cc_num == 16:
+				cc_calk = hex(calk)
+			str_calk = str(cc_calk)
+			str_num = str(num)
+
+			if (len(str_calk) > 1) and (str_calk[1] == "x"):
+				while len(str_calk[2:]) < count:
+					str_calk = str_calk[:2] + "0" + str_calk[2:]
+			else:
+				while len(str_calk) < count:
+					str_calk = "0" + str_calk
+
+			if (len(str_calk) > 1) and (str_calk[1] == "x"):
+				for letter in str_calk[2:]:
+					str_num = str_num.replace ("*", letter, 1)
+			else:
+				for letter in str_calk:
+					str_num = str_num.replace ("*", letter, 1)
+
+			self.varinants.append(str_num)
+		
+		self.cutvar (num, cc_num, cc_side)
+	#--------------------------------------------------------------------------------------------------------Функция сокращения количества вариантов)
+	def cutvar (self, num, cc_num, cc_side):
+		str_num = str(num)
+
+		counter = dict()
+
+		if (len(str_num) > 1) and (str_num[1] == "x"):
+			for i in range (len(str_num)-2):
+				for case in self.varinants:
+					if case[2+i] in counter:
+						counter[case[2+i]] = counter[case[2+i]] + 1
+					else:
+						counter[case[2+i]] = 1
+
+		else:
+			for i in range (len(str_num)):
+				for case in self.varinants:
+					if case[i] in counter:
+						counter[case[i]] = counter[case[i]] + 1
+					else:
+						counter[case[i]] = 1
+		print (counter)
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
 	def collectMM (self):
@@ -159,21 +232,21 @@ class Main_Window (tk.Tk):
 	#---------------------------------------------------------------------------------------------------------Функция генерации рандомного равенства)
 	def rand (self):
 		self.actnum = random.randint(self.mm[0], self.mm[1])
-		left_cc = self.cc[random.randint(0, len(self.cc))-1]
-		right_cc = left_cc
-		while left_cc == right_cc:
-			right_cc = self.cc[random.randint(0, len(self.cc))-1]	
-		if left_cc == 2:
+		self.left_cc = self.cc[random.randint(0, len(self.cc))-1]
+		self.right_cc = self.left_cc
+		while self.left_cc == self.right_cc:
+			self.right_cc = self.cc[random.randint(0, len(self.cc))-1]	
+		if self.left_cc == 2:
 			left = bin(self.actnum)
-		elif left_cc == 10:
+		elif self.left_cc == 10:
 			left = int(self.actnum)
-		elif left_cc ==16:
+		elif self.left_cc ==16:
 			left = hex(self.actnum)
-		if right_cc == 2:
+		if self.right_cc == 2:
 			right = bin(self.actnum)
-		elif right_cc == 10:
+		elif self.right_cc == 10:
 			right = int(self.actnum)
-		elif right_cc ==16:
+		elif self.right_cc ==16:
 			right = hex(self.actnum)
 
 		self.left = left
