@@ -138,23 +138,26 @@ class Main_Window (tk.Tk):
 		lr = self.str_mark.split("=")
 		left = lr[0]
 		right = lr[1]
+		if left[0] == "0":
+			left = left[2:]
+		if right[0] == "0":
+			right = right[2:]
 
 		if len(left) >= len(right):
-			self.variant (right, self.right_cc, self.left_cc)
+			self.variant (right, self.right_cc, lr[0], self.left_cc)
 		else:
-			self.variant (left, self.left_cc, self.right_cc)
+			self.variant (left, self.left_cc, lr[1], self.right_cc)
 
 		
 	#-----------------------------------------------------------------------------------------------------------------------Функция поиска вариантов)
-	def variant (self, num, cc_num, cc_side):
-		print (cc_num)
+	def variant (self, num, cc_num, side_num, cc_side):
+		print (cc_num, " ", cc_side)
 		print (num)
 		count = 0
 		self.varinants.clear()
 		for i in str(num):
 			if i == "*":
 				count = count + 1
-		print (count)
 
 		for calk in range (cc_num**count):
 			
@@ -181,7 +184,33 @@ class Main_Window (tk.Tk):
 				for letter in str_calk:
 					str_num = str_num.replace ("*", letter, 1)
 
-			self.varinants.append(str_num)
+			if str_num[0] == "0":
+				str_num_base = str_num[2:]
+			else:
+				str_num_base = str_num
+			print (str_num_base)
+
+			if cc_side == 16:
+				side_var = hex(int(str_num_base, cc_num))
+			elif cc_side == 10:
+				side_var = int(str_num_base, cc_num)
+			elif cc_side == 2:
+				side_var = bin(int(str_num_base, cc_num))
+			print (side_var)
+			print (side_num)
+
+
+			if len(side_num) == len(str(side_var)):
+				for l in range(len(side_num)):
+					if (side_num[l] == str(side_var)[l]) or (side_num[l] == "*"):
+						flag = True
+					else:
+						flag = False
+						break
+
+				if flag == True:
+					self.varinants.append(str_num)
+
 		
 		self.cutvar (num, cc_num, cc_side)
 	#--------------------------------------------------------------------------------------------------------Функция сокращения количества вариантов)
@@ -192,19 +221,23 @@ class Main_Window (tk.Tk):
 
 		if (len(str_num) > 1) and (str_num[1] == "x"):
 			for i in range (len(str_num)-2):
+				counter.clear()
 				for case in self.varinants:
 					if case[2+i] in counter:
 						counter[case[2+i]] = counter[case[2+i]] + 1
 					else:
 						counter[case[2+i]] = 1
+				print (i, counter)		
 
 		else:
 			for i in range (len(str_num)):
+				counter.clear()				
 				for case in self.varinants:
 					if case[i] in counter:
 						counter[case[i]] = counter[case[i]] + 1
 					else:
 						counter[case[i]] = 1
+				print(i, counter)
 		print (counter)
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
