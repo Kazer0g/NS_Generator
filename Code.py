@@ -136,6 +136,7 @@ class Main_Window (tk.Tk):
 	#--------------------------------------------------------------------------------------------------------------Функция сведения ответов к одному)
 	def minvar (self):
 		lr = self.str_mark.split("=")
+		print (lr)
 		left = lr[0]
 		right = lr[1]
 		if left[0] == "0":
@@ -184,11 +185,10 @@ class Main_Window (tk.Tk):
 				for letter in str_calk:
 					str_num = str_num.replace ("*", letter, 1)
 
-			if str_num[0] == "0":
+			if (str_num[0] == "0") and (len(str_num)>2):
 				str_num_base = str_num[2:]
 			else:
 				str_num_base = str_num
-			print (str_num_base)
 
 			if cc_side == 16:
 				side_var = hex(int(str_num_base, cc_num))
@@ -196,8 +196,6 @@ class Main_Window (tk.Tk):
 				side_var = int(str_num_base, cc_num)
 			elif cc_side == 2:
 				side_var = bin(int(str_num_base, cc_num))
-			print (side_var)
-			print (side_num)
 
 
 			if len(side_num) == len(str(side_var)):
@@ -239,6 +237,9 @@ class Main_Window (tk.Tk):
 						counter[case[i]] = 1
 				print(i, counter)
 		print (counter)
+		print (self.varinants)
+
+
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
 	def collectMM (self):
