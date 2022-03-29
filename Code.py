@@ -31,7 +31,7 @@ class Main_Window (tk.Tk):
 		self.left_cc = ""
 		self.right_cc = ""
 
-		self.varinants = []
+		self.variants = []
 
 		self.li_answears = []
 
@@ -136,6 +136,8 @@ class Main_Window (tk.Tk):
 	#--------------------------------------------------------------------------------------------------------------Функция сведения ответов к одному)
 	def minvar (self):
 		lr = self.str_mark.split("=")
+		lrr = self.str_full.split("=")
+		print (lrr)
 		print (lr)
 		left = lr[0]
 		right = lr[1]
@@ -145,17 +147,18 @@ class Main_Window (tk.Tk):
 			right = right[2:]
 
 		if len(left) >= len(right):
-			self.variant (right, self.right_cc, lr[0], self.left_cc)
+			self.variant (right, self.right_cc, lr[0], self.left_cc, lrr[0])
 		else:
-			self.variant (left, self.left_cc, lr[1], self.right_cc)
+			self.variant (left, self.left_cc, lr[1], self.right_cc, lrr[1])
 
 		
 	#-----------------------------------------------------------------------------------------------------------------------Функция поиска вариантов)
-	def variant (self, num, cc_num, side_num, cc_side):
+	def variant (self, num, cc_num, side_num, cc_side, check):
 		print (cc_num, " ", cc_side)
 		print (num)
 		count = 0
-		self.varinants.clear()
+		side_vars = []
+		self.variants.clear()
 		for i in str(num):
 			if i == "*":
 				count = count + 1
@@ -190,6 +193,7 @@ class Main_Window (tk.Tk):
 			else:
 				str_num_base = str_num
 
+			
 			if cc_side == 16:
 				side_var = hex(int(str_num_base, cc_num))
 			elif cc_side == 10:
@@ -206,38 +210,31 @@ class Main_Window (tk.Tk):
 						flag = False
 						break
 
+
 				if flag == True:
-					self.varinants.append(str_num)
+					self.variants.append(str_num)
+					side_vars.append(side_var)
+					print (side_num, str(side_var))
 
-		
-		self.cutvar (num, cc_num, cc_side)
-	#--------------------------------------------------------------------------------------------------------Функция сокращения количества вариантов)
-	def cutvar (self, num, cc_num, cc_side):
-		str_num = str(num)
+		print (self.variants)
+		print (side_vars)
 
-		counter = dict()
+		while len(self.variants) > 1:
+			index = side_num[::-1].find ("*")
+			side_num = side_num[:-index-1] + check[-index-1] + side_num[-index:]
 
-		if (len(str_num) > 1) and (str_num[1] == "x"):
-			for i in range (len(str_num)-2):
-				counter.clear()
-				for case in self.varinants:
-					if case[2+i] in counter:
-						counter[case[2+i]] = counter[case[2+i]] + 1
+			for s in range (len(side_vars)):
+				print (side_vars[s], side_num)
+				for l in range(len(side_num)):
+					if (side_num[l] == str(side_vars[s])[l]) or (side_num[l] == "*"):
+						flag = True
 					else:
-						counter[case[2+i]] = 1
-				print (i, counter)		
+						self.variants.pop(s)
+						side_vars.pop(s)
+						s = s-1
 
-		else:
-			for i in range (len(str_num)):
-				counter.clear()				
-				for case in self.varinants:
-					if case[i] in counter:
-						counter[case[i]] = counter[case[i]] + 1
-					else:
-						counter[case[i]] = 1
-				print(i, counter)
-		print (counter)
-		print (self.varinants)
+			print (self.variants)
+			print (side_vars)
 
 
 
