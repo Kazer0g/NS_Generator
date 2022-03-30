@@ -140,24 +140,28 @@ class Main_Window (tk.Tk):
 		print (lrr)
 		print (lr)
 		left = lr[0]
+		leftr = lr[0]
 		right = lr[1]
+		rightr = lr[1]
 		if left[0] == "0":
 			left = left[2:]
 		if right[0] == "0":
 			right = right[2:]
 
 		if len(left) >= len(right):
-			self.variant (right, self.right_cc, lr[0], self.left_cc, lrr[0])
+			self.variant (right, self.right_cc, lr[0], self.left_cc, lrr[0], lr[1])
 		else:
-			self.variant (left, self.left_cc, lr[1], self.right_cc, lrr[1])
+			self.variant (left, self.left_cc, lr[1], self.right_cc, lrr[1], lr[0])
 
 		
 	#-----------------------------------------------------------------------------------------------------------------------Функция поиска вариантов)
-	def variant (self, num, cc_num, side_num, cc_side, check):
+	def variant (self, num, cc_num, side_num, cc_side, check, writer):
 		print (cc_num, " ", cc_side)
 		print (num)
+		print (writer)
 		count = 0
 		side_vars = []
+		pops = []
 		self.variants.clear()
 		for i in str(num):
 			if i == "*":
@@ -210,33 +214,52 @@ class Main_Window (tk.Tk):
 						flag = False
 						break
 
-
 				if flag == True:
 					self.variants.append(str_num)
 					side_vars.append(side_var)
 					print (side_num, str(side_var))
+		
+
+		self.cut(num, cc_num, side_num, cc_side, check, writer, side_vars, pops)
+
+	def cut (self, num, cc_num, side_num, cc_side, check, writer, side_vars, pops):
 
 		print (self.variants)
 		print (side_vars)
 
 		while len(self.variants) > 1:
 			index = side_num[::-1].find ("*")
-			side_num = side_num[:-index-1] + check[-index-1] + side_num[-index:]
+			if index != 0:
+				side_num = side_num[:-index-1] + check[-index-1] + side_num[-index:]
+			else:
+				side_num = side_num[:-index-1] + check[-index-1]
 
-			for s in range (len(side_vars)):
-				print (side_vars[s], side_num)
+
+			for s in range(len(side_vars)):
 				for l in range(len(side_num)):
 					if (side_num[l] == str(side_vars[s])[l]) or (side_num[l] == "*"):
 						flag = True
 					else:
-						self.variants.pop(s)
-						side_vars.pop(s)
-						s = s-1
+						flag = False
+						pops.append(s)
+						break
+						
+			if len(pops) >= 1:
+				x = 0 
+				for m in pops:
+					side_vars.pop(m-x)
+					self.variants.pop(m-x)
+					x = x + 1
+			pops.clear()
+
+
+			print (side_num)
+			print (check)
 
 			print (self.variants)
 			print (side_vars)
 
-
+		self.li_mark.append(str(writer + "=" + side_num))
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
 	def collectMM (self):
@@ -257,7 +280,7 @@ class Main_Window (tk.Tk):
 			print ("Некоректно введено максимальное значение")
 			self.mm = []
 
-		if numMin >numMax:
+		if numMin > numMax:
 			print ("Некоректно введен диапазон")
 
 	#---------------------------------------------------------------------------------------------------------Функция генерации рандомного равенства)
