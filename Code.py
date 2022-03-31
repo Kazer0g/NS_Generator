@@ -115,10 +115,11 @@ class Main_Window (tk.Tk):
 			self.rand()
 			self.mark (self.left, self.right)
 			if self.lot.get() != 1:
-				self.li_full.append("Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
+				self.li_full.append(str(i+1)+ ") " + "Загаданное число в десятичной системе:" + str(self.actnum))
+				self.minvar()
 				self.li_mark.append(self.str_mark)
 			elif self.lot.get() == 1:
-				self.li_full.append("Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
+				self.li_full.append(str(i+1)+ ") " + "Загаданное число в десятичной системе:" + str(self.actnum)+ "\n" + self.str_full)
 				self.minvar ()
 		print(self.li_full)
 		print (self.li_mark)
@@ -219,8 +220,13 @@ class Main_Window (tk.Tk):
 					side_vars.append(side_var)
 					print (side_num, str(side_var))
 		
-
-		self.cut(num, cc_num, side_num, cc_side, check, writer, side_vars, pops)
+		if self.lot.get() == 1:
+			self.cut(num, cc_num, side_num, cc_side, check, writer, side_vars, pops)
+		else:
+			lo = ""
+			for u in range(len (side_vars)):
+				lo = lo + self.variants[u] + "=" + str(side_vars[u]) + "\n"
+			self.li_full.append(lo)
 
 	def cut (self, num, cc_num, side_num, cc_side, check, writer, side_vars, pops):
 
@@ -366,16 +372,17 @@ class Main_Window (tk.Tk):
 		tasks = Document()
 		tasks.add_heading ("Цифровая электроника", 0)
 		tasks.add_heading ("Ученика(цы) __ класса \"___\" _______________________ ", 2)
-		for i in self.li_mark:
-			tasks.add_paragraph (i)
+		for i in range(len(self.li_mark)):
+			so = str(str(i+1) + ") " + self.li_mark[i])
+			tasks.add_paragraph (so)
 
 		tasks.save("Задачи.docx")
 
 		#------------------------------------------------------------------------------------------------------------------------------------Ответы)
 		answers = Document()
 		answers.add_heading("Цифровая электроника", 0)
-		for j in self.li_full:
-			answers.add_paragraph(j)
+		for j in range(len(self.li_full)):
+			answers.add_paragraph(self.li_full[j])
 		answers.save("Ответы.docx")
 		
 
