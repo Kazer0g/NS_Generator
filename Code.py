@@ -265,7 +265,10 @@ class Main_Window (tk.Tk):
 			print (self.variants)
 			print (side_vars)
 
-		self.li_mark.append(str(writer + "=" + side_num))
+		if len(writer)>len(side_num):
+			self.li_mark.append(str(side_num + "=" + writer))
+		else:
+			self.li_mark.append(str(writer + "=" + side_num))
 
 	#------------------------------------------------------------------------------------------Функция сбора диапазона значений генерируегмого числа)
 	def collectMM (self):
