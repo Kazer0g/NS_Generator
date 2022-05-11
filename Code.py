@@ -375,7 +375,10 @@ class Main_Window (tk.Tk):
 		tasks = Document()
 		tasks.add_heading ("Цифровая электроника", 0)
 		tasks.add_heading ("Ученика(цы) __ класса \"___\" _______________________ ", 2)
+		st = []
 		for i in range(len(self.li_mark)):
+			st.append(self.li_mark[i][:2])
+			print (st)
 			so = str(str(i+1) + ") " + self.li_mark[i])
 			tasks.add_paragraph (so)
 
@@ -385,7 +388,28 @@ class Main_Window (tk.Tk):
 		answers = Document()
 		answers.add_heading("Цифровая электроника", 0)
 		for j in range(len(self.li_full)):
-			answers.add_paragraph(self.li_full[j])
+			
+			if self.lot.get() == 1:
+				s = self.li_full[j].split('=')			
+				sa = s[0].split('\n')
+				sa.append (s[1])
+				print (sa)
+				if st[j][0]!="0":
+					if sa[1][0]!="0":
+						l = sa[0] + '\n' + sa[1] + '=' + sa[2]
+					else:
+						l = sa[0] + '\n' + sa[2] + '=' + sa[1]
+				else:
+					print (sa[1][:2])
+					if sa[1][:2]==st[j]:
+						l = sa[0] + '\n' + sa[1] + '=' + sa[2]
+					else:
+						l = sa[0] + '\n' + sa[2] + '=' + sa[1]
+				answers.add_paragraph(l)
+			else:
+				answers.add_paragraph(self.li_full[j])
+
+			
 		answers.save("Ответы.docx")
 		
 
@@ -396,3 +420,4 @@ if __name__ == "__main__":
 	main_window.geometry ("500x400")
 
 	main_window.mainloop()
+
