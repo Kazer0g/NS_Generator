@@ -69,7 +69,7 @@ class Main_Window (tk.Tk):
 		self.mod = ''
 
 		# -------------------------------------Input)
-		self.btn_saveNS = tk.Button (self, text='Сахранить', width=10, height=1, command=self.saveNS)
+		self.btn_saveNS = tk.Button (self, text='Сохранить', width=10, height=1, command=self.saveNS)
 		self.btn_saveNS.place (x=0, y=20)
 
 		self.ent_list_strNS = tk.Entry (self, width=80)
@@ -136,6 +136,7 @@ class Main_Window (tk.Tk):
 		self.list_NS.sort()
 		self.ent_list_strNS.delete(0, tk.END)
 		self.ent_list_strNS.insert(0, self.list_NS)
+
 
 	# -------------------------------------Сбор данных)
 	def collect (self):
@@ -216,6 +217,7 @@ class Main_Window (tk.Tk):
 					self.swithch(equal)
 				self.all_answers(equal)
 			else:
+				self.list_Equals.remove (equal)
 				self.create(equal)
 
 	def create (self, equal):
@@ -246,13 +248,26 @@ class Main_Window (tk.Tk):
 		
 		os.chdir('Ребусы ' + str(i))
 		st = ''
+
+		answers = Document()
+		answers.add_heading('Цифровая электроника', 0)
+
+		tasks = Document()
+		tasks.add_heading ('Цифровая электроника', 0)
+		tasks.add_heading ('Ученика(цы) __ класса \'___\' _______________________ ', 2)
 		for i in range(len(self.list_Equals)):
 			equal = self.list_Equals[i]
 			# ------------------------------Запись ответов)
-			answers = Document()
-			answers.add_heading('Цифровая электроника', 0)
+			
 			if self.mod == 1:
-				answers.add_paragraph(str(str(i+1) + ') ' + equal.left_full + '=' + equal.right_full))
+				par = answers.add_paragraph(str(str(i+1) + ') '))
+				left_full = par.add_run(equal.left_full)
+				left_cc = par.add_run(str(equal.left_cc))
+				left_cc.font.subscript = True
+				eq = par.add_run('=')
+				right_full = par.add_run(equal.right_full)
+				right_cc = par.add_run(str(equal.right_cc))
+				right_cc.font.subscript = True
 			elif self.mod == 0:
 				for j in range(len(equal.list_answers)):
 					st = st + equal.list_answers[j] + '=' + str(int_to_NS(NS_to_int(equal.list_answers[j], equal.left_cc), equal.right_cc)) + '\n'
@@ -267,9 +282,7 @@ class Main_Window (tk.Tk):
 					right_cc.font.subscript = True
 					n = par.add_run ('\n')
 			# ------------------------------Запись заданий)
-			tasks = Document()
-			tasks.add_heading ('Цифровая электроника', 0)
-			tasks.add_heading ('Ученика(цы) __ класса \'___\' _______________________ ', 2)
+			
 			par = tasks.add_paragraph(str(str(i+1) + ') '))
 			left_mark = par.add_run (equal.left_mark)
 			left_cc = par.add_run (str(equal.left_cc))
